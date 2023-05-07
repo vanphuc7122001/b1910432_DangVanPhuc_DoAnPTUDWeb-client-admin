@@ -7,7 +7,6 @@
           <tr>
             <th>#</th>
             <th>Thời gian đặt</th>
-            <th>Thông tin người nhận</th>
             <th>Thông tin người đặt</th>
             <th>Trạng thái</th>
             <th>Tổng tiền</th>
@@ -16,38 +15,40 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td></td>
-            <td></td>
+          <tr v-for="(orderItem, index) in orderList" :key="index">
+            <td>{{ index+1 }}</td>
+            <td>{{ orderItem.createdAt }}</td>
             <td>
-              <br />
-              <br />
-              <br />
+              {{ orderItem.owner.name }}
+              <br>
+              {{ orderItem.owner.phone_number }}
+              <br>
+              {{ orderItem.owner.address }}
+
             </td>
             <td>
-              <br />
-              <br />
-              <br />
+              <span v-if="orderItem.status==1">Duyệt</span>
+              <span v-if="orderItem.status==2">Hủy</span>
+              <span v-if="orderItem.status==0">Chờ xác nhận</span>
             </td>
             <td>
+              {{ orderItem.totalPrice }} .000.000 VND
             </td>
-            <td></td>
             <td>
               <!-- /admin/home/view-order -->
-              <router-link to="/admin/home/view-order">
+              <router-link :to="`/admin/home/view-order/${orderItem._id}`">
                 Xem chi tiết
               </router-link>
             </td>
             <td>
-              <a href="?controller=orders&action=update&id=&status=1">
+              <button class="btn p-3 text-info" style="font-size: 16px;" @click="handleApprove({id: orderItem._id, status: 1})">
                 Duyệt
-              </a>
-              <a
-                href="?controller=orders&action=update&id=&status=2"
-                class="ml-3"
+              </button>
+              <button
+              class="btn p-3 text-danger" style="font-size: 16px;" @click="handleCancel({id: orderItem._id, status: 2})"
               >
                 Hủy
-              </a>
+              </button>
             </td>
           </tr>
         </tbody>
@@ -57,7 +58,29 @@
 </template>
 
 <script>
-export default {};
+import { createNamespacedHelpers } from 'vuex'
+const { mapState,mapActions } = createNamespacedHelpers('order')
+
+export default {
+  computed: {
+    ...mapState({
+      orderList: (state) => state.orderList
+    }),
+  },
+
+  methods: {
+    ...mapActions({
+      getAllOrder: "actionGetAllOrder",
+      handleApprove: "actionHandleApprove",
+      handleCancel: "actionHandleCancel"
+    }),
+    
+  },
+
+  created() {
+    this.getAllOrder()
+  }
+};
 </script>
 
 <style></style>

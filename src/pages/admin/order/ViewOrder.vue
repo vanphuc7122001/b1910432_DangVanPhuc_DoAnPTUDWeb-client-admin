@@ -15,29 +15,51 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr v-for="(product, index) in orderDetail" :key="index">
                         <td>
-                            <img src="" alt="" width="150px">
+                            <img :src="product.image" alt="" style="width: 50px;">
                         </td>
-                        <td> </td>
-                        <td></td>
-                        <td> </td>
+                        <td> {{ product.name }}</td>
+                        <td>{{ product.price }}</td>
+                        <td> 1 </td>
                         <td>
+                            {{ product.price}}
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="card-footer text-danger">
-            <h4>Tổng tiền cho đơn hàng này là : </h4>
+            <h4>Tổng tiền cho đơn hàng này là : {{ totalPrice }} .000.000 VND</h4>
         </div>
     </div>
 </template>
 
 <script>
-export default {
+import { createNamespacedHelpers } from 'vuex'
+const { mapState,mapActions } = createNamespacedHelpers('order')
 
-}
+export default {
+  computed: {
+    ...mapState({
+        orderDetail: (state) => state.orderDetail,
+        totalPrice: (state) => state.totalPrice
+    }),
+  },
+
+  methods: {
+    ...mapActions({
+      getOrderDetails: "actionGetOrderDetail"
+    }),
+    
+  },
+
+  created() {
+    this.getOrderDetails(this.$route.params.id)
+  }
+};
 </script>
+
+
 
 <style></style>

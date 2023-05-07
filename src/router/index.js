@@ -52,7 +52,7 @@ const routes = [
         component: OrderList,
       },
       {
-        path: "/admin/home/view-order",
+        path: "/admin/home/view-order/:id",
         component: ViewOrder,
       },
     ],
